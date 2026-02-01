@@ -1,0 +1,191 @@
+## 1. Project Overview
+
+**Project Name:** Loan Tracker Web Application
+**Purpose:**
+A web-based application that allows users to manually record, manage, and track loans they have given to other individuals. The system focuses on loan tracking, history preservation, and reminders — not payments or lending transactions.
+
+**Technology Stack:**
+
+* Frontend: React + TypeScript
+* Styling: Tailwind CSS
+* Platform: Web-only (responsive)
+* Authentication: Email & Password
+
+---
+
+## 2. Target Users & Roles
+
+### User Roles
+
+1. **Borrower (Regular User)**
+
+   * Can create, view, update, and delete their own loans
+   * Can mark loans as completed
+   * Can export their loan data
+   * Can view dashboards and notifications related to their loans
+
+2. **Super Admin**
+
+   * Can view all loans across all users
+   * Can manage users
+   * Can perform full CRUD operations on any loan
+   * Can impersonate users if required
+
+**No staff/agent role is required.**
+
+---
+
+## 3. Authentication & Authorization
+
+* Users must **register first** using email and password
+* Users must log in to access the application
+* Role-based access control must be enforced
+* No social login
+* No OTP-based authentication
+
+---
+
+## 4. Core Features
+
+### Loan Management
+
+* Add New Loan button available on dashboard
+* Users can manage multiple loans
+* All loan data is entered manually (no auto-calculation)
+
+### Loan Fields
+
+Each loan record must include:
+
+1. Borrower Name
+2. Actual Loan Amount (INR)
+3. Interest Amount (INR)
+4. Given Date
+5. Due Date
+6. Notes (optional, free text)
+7. Loan Status:
+
+   * Active
+   * Overdue
+   * Completed
+
+---
+
+## 5. Repayment & Loan History Rules
+
+* Repayment status is managed manually
+* Users can mark loans as completed
+* Missed payments can include penalties (manual entry)
+* If a loan is extended:
+
+  * Previous due dates must be preserved
+  * Previous interest amounts must be preserved
+  * Extension history must be visible for reference
+* Loan history must never be overwritten
+
+---
+
+## 6. Notifications
+
+### Notification Types
+
+* Upcoming due date reminders
+* Overdue loan alerts
+
+### Notification Channels
+
+* In-app notifications
+* Email notifications
+
+**No SMS or push notifications.**
+
+---
+
+## 7. Dashboard & UI Requirements
+
+### Design Style
+
+* Modern / fintech-style UI
+* Clean, card-based layout
+* Responsive across desktop and mobile
+* No dark mode
+* No predefined branding assets
+
+### Dashboard Components
+
+* Summary cards:
+
+  * Total loans
+  * Active loans
+  * Overdue loans
+  * Completed loans
+
+### Loan Listing
+
+* Card-based loan list
+* Each loan card must include action buttons:
+
+  * View details
+  * Edit
+  * Export
+  * Delete
+  * Mark as completed
+
+---
+
+## 8. Reporting & Exporting
+
+* Users can view:
+
+  * Loan summaries
+  * Loan history timelines
+* Export options:
+
+  * PDF
+  * Excel / CSV
+* Admin can export system-wide loan data
+
+---
+
+## 9. Data Management & Retention
+
+* Loan data is stored until the user deletes it
+* Deleted loans are permanently removed
+* No archiving
+* No soft delete
+
+---
+
+## 10. Integrations
+
+* No payment gateway integration
+* No banking APIs
+* No accounting software integrations
+* CSV / Excel export only
+
+---
+
+## 11. Non-Functional Requirements
+
+* Expected users: ~10
+* Currency: INR only
+* Performance: Fast load times (ASAP)
+* No multi-language support
+* No AI or predictive features
+
+---
+
+## 12. Out of Scope (Explicitly Excluded)
+
+* Payments inside the app
+* EMI auto-calculation
+* Credit scoring
+* Dark mode
+* Mobile native apps
+
+---
+
+# ✅ End of File
+
+---
+
