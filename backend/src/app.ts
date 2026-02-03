@@ -19,7 +19,10 @@ const app = express();
 
 // Middleware
 app.use(cors({
-    origin: env.appBaseUrl,
+    origin: [env.appBaseUrl,
+        "http://localhost:5173",
+        "https://trackyourloan.onrender.com"
+    ],
     credentials: true,
 }));
 app.use(express.json());
