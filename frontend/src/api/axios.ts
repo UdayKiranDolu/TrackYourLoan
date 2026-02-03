@@ -105,14 +105,34 @@
 
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL + '/api'; // ← production backend
+// ✅ Safe API URL with fallback
+const getApiBaseUrl = (): string => {
+    const envUrl = import.meta.env.VITE_API_URL;
+
+    if (!envUrl) {
+        console.warn('VITE_API_URL is not defined, using default');
+        // Fallback for development
+        if (import.meta.env.DEV) {
+            return 'http://localhost:4000/api';
+        }
+        throw new Error('VITE_API_URL must be defined in production');
+    }
+
+    // Remove trailing slash if present, then add /api
+    return `${envUrl.replace(/\/$/, '')}/api`;
+};
+
+const API_BASE_URL = getApiBaseUrl();
+
+console.log('API Base URL:', API_BASE_URL); // Debug log (remove in production)
 
 const api = axios.create({
     baseURL: API_BASE_URL,
     headers: {
         'Content-Type': 'application/json',
     },
-    withCredentials: true, // important if using cookies
+    withCredentials: true,
+    timeout: 10000, // ✅ Add timeout (10 seconds)
 });
 
 // Request interceptor
@@ -122,6 +142,12 @@ api.interceptors.request.use(
         if (token) {
             config.headers.Authorization = `Bearer ${token}`;
         }
+
+        // ✅ Debug log for development
+        if (import.meta.env.DEV) {
+            console.log(`🚀 ${config.method?.toUpperCase()} ${config.baseURL}${config.url}`);
+        }
+
         return config;
     },
     (error) => Promise.reject(error)
@@ -135,7 +161,13 @@ api.interceptors.response.use(
             _retry?: boolean;
         };
 
-        // Handle 401 - Token expired (but NOT for login/register)
+        // ✅ Handle network errors
+        if (!error.response) {
+            console.error('Network Error:', error.message);
+            return Promise.reject(new Error('Network error. Please check your connection.'));
+        }
+
+        // Handle 401 - Token expired
         if (
             error.response?.status === 401 &&
             !originalRequest._retry &&
@@ -148,7 +180,7 @@ api.interceptors.response.use(
             if (refreshToken) {
                 try {
                     const response = await axios.post(
-                        `${import.meta.env.VITE_API_URL}/api/auth/refresh`,
+                        `${API_BASE_URL}/auth/refresh`, // ✅ Use API_BASE_URL constant
                         { refreshToken },
                         { withCredentials: true }
                     );
@@ -161,17 +193,11 @@ api.interceptors.response.use(
                     originalRequest.headers.Authorization = `Bearer ${accessToken}`;
                     return api(originalRequest);
                 } catch (refreshError) {
-                    localStorage.removeItem('accessToken');
-                    localStorage.removeItem('refreshToken');
-                    localStorage.removeItem('user');
-                    window.location.href = '/login';
+                    clearAuthAndRedirect();
                     return Promise.reject(refreshError);
                 }
             } else {
-                localStorage.removeItem('accessToken');
-                localStorage.removeItem('refreshToken');
-                localStorage.removeItem('user');
-                window.location.href = '/login';
+                clearAuthAndRedirect();
             }
         }
 
@@ -188,4 +214,13 @@ api.interceptors.response.use(
     }
 );
 
+// ✅ Helper function to avoid code duplication
+const clearAuthAndRedirect = (): void => {
+    localStorage.removeItem('accessToken');
+    localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
+    window.location.href = '/login';
+};
+
 export default api;
+export { API_BASE_URL }; // ✅ Export for use elsewhere if needed
