@@ -6,21 +6,19 @@
       "ES2023"
     ],
     "module": "ESNext",
-    "skipLibCheck": true,
-    "composite": true,
-    /* Bundler mode */
     "moduleResolution": "Bundler",
-    "allowImportingTsExtensions": true,
+    /* Required for project references */
+    "composite": true,
+    /* Vite / Node compatibility */
     "allowSyntheticDefaultImports": true,
     "isolatedModules": true,
     "moduleDetection": "force",
-    "noEmit": true,
-    /* Linting */
+    /* Safety */
+    "skipLibCheck": true,
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noFallthroughCasesInSwitch": true
   },
   "include": [
     "vite.config.ts"
