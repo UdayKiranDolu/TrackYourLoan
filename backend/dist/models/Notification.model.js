@@ -1,0 +1,53 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Notification = void 0;
+const mongoose_1 = require("mongoose");
+const notificationSchema = new mongoose_1.Schema({
+    userId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'User',
+        required: true,
+        index: true,
+    },
+    loanId: {
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: 'Loan',
+        index: true,
+    },
+    type: {
+        type: String,
+        enum: ['DUE_SOON', 'OVERDUE'],
+        required: true,
+    },
+    channel: {
+        type: String,
+        enum: ['IN_APP', 'EMAIL'],
+        required: true,
+    },
+    title: {
+        type: String,
+        required: true,
+        maxlength: 200,
+    },
+    message: {
+        type: String,
+        required: true,
+        maxlength: 1000,
+    },
+    readAt: {
+        type: Date,
+        default: null,
+    },
+    emailStatus: {
+        type: String,
+        enum: ['PENDING', 'SENT', 'FAILED'],
+    },
+}, { timestamps: true });
+// Compound unique index to prevent duplicate notifications
+notificationSchema.index({ loanId: 1, type: 1, channel: 1 }, {
+    unique: true,
+    partialFilterExpression: { loanId: { $exists: true, $ne: null } },
+});
+notificationSchema.index({ userId: 1, readAt: 1, createdAt: -1 });
+exports.Notification = (0, mongoose_1.model)('Notification', notificationSchema);
+//# sourceMappingURL=Notification.model.js.map
